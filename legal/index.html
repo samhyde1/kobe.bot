@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legal · kobe.bot</title>
+<meta name="description" content="Jev reads case files and public records and tags every fact as confirmed, inferred or not found, with its source. Findings lawyers can defend.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&amp;display=swap" rel="stylesheet">
+<style>
+html{background:#000;color-scheme:dark;-webkit-text-size-adjust:100%}
+body{margin:0;background:#000}
+#top{overflow-x:hidden;overflow-x:clip;background:#000;color:#fff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;min-height:100vh;position:relative;padding-bottom:8px}
+.kb-navlink{font:700 12px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;color:#fff;padding:6px 0;border-bottom:1px solid transparent;white-space:nowrap}
+.kb-navlink[aria-current="page"]{border-bottom-color:#fff}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #3FD0C9;outline-offset:3px}
+a{color:inherit}a:hover{opacity:0.7}
+.lg-wrap{max-width:1280px;margin:0 auto;box-sizing:border-box;padding-left:clamp(20px,4vw,56px);padding-right:clamp(20px,4vw,56px)}
+.lg-label{font:700 11px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#a8a8a8}
+.lg-h1{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:0.2em;row-gap:8px;font:italic 700 clamp(56px,7.4vw,112px)/0.85 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.035em}
+.lg-h1 small{font:italic 400 clamp(22px,3vw,38px)/1 'IM Fell English',Georgia,serif;letter-spacing:0.01em}
+.lg-lede{margin:0;font:400 18px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:620px}
+.lg-head{display:flex;flex-direction:column;gap:24px;padding-top:clamp(48px,7vw,96px)}
+
+/* stage */
+.lg-stage{margin-top:clamp(36px,5vw,64px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);border:1px solid rgba(255,255,255,0.3)}
+.lg-room{position:relative;border-right:1px solid rgba(255,255,255,0.3);background:#000;min-width:0}
+.lg-room svg{display:block;width:100%;height:auto}
+.ln{stroke:#fff;stroke-width:1;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.dim{stroke:rgba(255,255,255,0.35)}
+.faint{stroke:rgba(255,255,255,0.14)}
+.lamp{transform-origin:300px 0;animation:sway 6s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
+.cone{animation:flick 7s steps(1) infinite}
+@keyframes flick{0%,100%{opacity:1}62%{opacity:.55}63%{opacity:1}64%{opacity:.7}65%{opacity:1}}
+.bear{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+.sheet{transform-box:fill-box;transform-origin:left center}
+.sheet.flip{animation:flip .5s ease-in-out}
+@keyframes flip{0%{transform:scaleX(1)}50%{transform:scaleX(-0.05)}100%{transform:scaleX(1)}}
+.bubble{opacity:0;transform:scale(.6);transform-box:fill-box;transform-origin:left bottom;transition:opacity .15s,transform .25s cubic-bezier(.3,1.8,.5,1)}
+.bubble.on{opacity:1;transform:scale(1)}
+.bubble text{fill:#000;stroke:none;font:italic 700 30px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.02em}
+.room-cap{position:absolute;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.room-cap span{font:700 10px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#a8a8a8}
+.rec{color:#FF5A4F!important}
+.rec::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#FF5A4F;margin-right:7px;vertical-align:1px;animation:blink 1.2s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* case file */
+.lg-file{padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0;background:#111;min-height:560px;box-sizing:border-box}
+.cf-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:2px solid #fff;padding-bottom:10px}
+.cf-status{font:700 11px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#FCB400;white-space:nowrap}
+.cf-sus{display:flex;gap:14px;align-items:flex-start;position:relative}
+.mug{flex:none;width:86px;height:100px;border:1px solid rgba(255,255,255,0.3);position:relative;overflow:hidden;background:#000}
+.mug svg{display:block;width:100%;height:100%}
+.liar{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-12deg) scale(2.4);opacity:0;border:3px solid #FF5A4F;color:#FF5A4F;padding:4px 10px 2px;font:italic 800 34px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.02em;background:rgba(0,0,0,0.78);pointer-events:none;white-space:nowrap;z-index:2}
+.liar.on{animation:slam .32s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes slam{0%{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(2.4)}100%{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}}
+.sus-name{margin:0;font:700 26px/1.05 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.02em}
+.sus-role{margin:4px 0 0;font:400 13px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#a8a8a8}
+.sus-claim{margin:8px 0 0;font:italic 400 17px/1.3 'IM Fell English',Georgia,serif}
+.cf-doc{border:1px solid rgba(255,255,255,0.3);padding:10px 12px;display:flex;flex-direction:column;gap:8px;background:#000}
+.doc-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.doc-name{font:700 12px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.08em;text-transform:uppercase}
+.doc-page{font:700 11px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.12em;color:#a8a8a8;font-variant-numeric:tabular-nums}
+.doc-lines{height:46px;overflow:hidden;position:relative}
+.doc-lines i{display:block;height:1px;background:rgba(255,255,255,0.35);margin:0 0 8px;transform-origin:left;transition:transform .25s linear}
+.doc-bar{height:2px;background:rgba(255,255,255,0.15)}
+.doc-bar b{display:block;height:100%;width:0;background:#3FD0C9;transition:width .3s linear}
+.facts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.fact{display:grid;grid-template-columns:104px minmax(0,1fr);gap:10px;align-items:start;padding:8px 0;border-top:1px solid rgba(255,255,255,0.14);opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+.fact.on{opacity:1;transform:none}
+.fact.hit .ftxt{box-shadow:inset 3px 0 0 #FF5A4F;padding-left:9px}
+.tag{justify-self:start;font:800 10px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.12em;padding:5px 6px 4px;border:1.5px solid currentColor;transform:rotate(-4deg) scale(1.8);opacity:0}
+.fact.on .tag{animation:stamp .28s cubic-bezier(.2,1.4,.4,1) .12s forwards}
+@keyframes stamp{to{transform:rotate(-4deg) scale(1);opacity:1}}
+.t-c{color:#9DFFB0}.t-i{color:#FCB400}.t-n{color:#a8a8a8;border-style:dashed}
+.ftxt{margin:0;font:400 15px/1.35 'Helvetica Neue',Helvetica,Arial,sans-serif;transition:padding .2s}
+.fsrc{display:block;margin-top:3px;font:400 12px/1.35 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#a8a8a8}
+.verdict{margin-top:auto;border-top:2px solid #FF5A4F;padding-top:10px;opacity:0;transition:opacity .3s}
+.verdict.on{opacity:1}
+.verdict p{margin:4px 0 0;font:700 16px/1.35 'Helvetica Neue',Helvetica,Arial,sans-serif}
+.verdict .lg-label{color:#FF5A4F}
+
+.lg-made{margin:10px 0 0;font:400 12px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#a8a8a8}
+
+/* pitch */
+.lg-pitch{padding-top:clamp(64px,8vw,112px);display:flex;flex-direction:column;gap:clamp(40px,5vw,64px)}
+.lg-h2{margin:0;font:700 clamp(36px,5vw,64px)/0.95 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.03em}
+.lg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:8px}
+.lg-card{background:#111;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.lg-card h3{margin:0;font:700 26px/1.05 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.02em}
+.lg-card p{margin:0;font:400 16px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif}
+.lg-card svg{display:block;width:100%;height:auto;margin-top:auto}
+.lg-card svg text{fill:#fff;stroke:none;font:700 9px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.14em}
+.lg-note{margin:0;align-self:flex-start;background:#fff;color:#000;padding:10px 16px;font:700 18px/1.35 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.01em}
+.cta{border-top:1px solid #fff;padding-top:24px;display:flex;flex-direction:column;gap:18px}
+.cta form{display:flex;flex-wrap:wrap;gap:8px;max-width:640px}
+.cta input{flex:1 1 260px;min-width:0;background:#000;color:#fff;border:1px solid rgba(255,255,255,0.5);padding:14px 14px;font:400 16px 'Helvetica Neue',Helvetica,Arial,sans-serif;border-radius:0}
+.cta input::placeholder{color:#a8a8a8}
+.cta button{flex:none;background:#fff;color:#000;border:0;padding:14px 20px;font:700 12px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;border-radius:0}
+.cta button:hover{opacity:.85}
+.cta-msg{margin:0;font:400 14px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#a8a8a8;min-height:1.4em}
+.lg-foot{max-width:1280px;margin:0 auto;padding:96px clamp(20px,4vw,56px) 48px;box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#a8a8a8}
+@media (max-width:900px){.lg-stage{grid-template-columns:minmax(0,1fr)}.lg-room{border-right:0;border-bottom:1px solid rgba(255,255,255,0.3)}.lg-file{min-height:600px}}
+@media (max-width:420px){.fact{grid-template-columns:minmax(0,1fr);gap:6px}.sus-name{font-size:22px}.lg-file{min-height:660px}}
+@media (prefers-reduced-motion:reduce){.lamp,.cone,.bear,.rec::before{animation:none}.liar.on{animation:none;opacity:1;transform:translate(-50%,-50%) rotate(-12deg)}.fact.on .tag{animation:none;opacity:1;transform:rotate(-4deg)}.sheet.flip{animation:none}}
+</style>
+</head>
+<body>
+<div id="top">
+<nav aria-label="Main" class="kb-nav" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding: 20px clamp(20px, 4vw, 56px); border-bottom: 1px solid rgba(255,255,255,0.3)">
+<a href="/" aria-label="kobe.bot, back to the intro" style="display: flex; align-items: center; gap: 12px; text-decoration: none"><svg role="img" aria-label="kobe.bot bear logo" viewBox="0 0 19 17" width="38" height="34" style="display:block;fill:#ffffff;shape-rendering:crispEdges"><rect x="2" y="0" width="4" height="1"/><rect x="13" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="1"/><rect x="12" y="1" width="6" height="1"/><rect x="0" y="2" width="7" height="1"/><rect x="12" y="2" width="7" height="1"/><rect x="0" y="3" width="7" height="1"/><rect x="12" y="3" width="7" height="1"/><rect x="0" y="4" width="6" height="1"/><rect x="7" y="4" width="5" height="1"/><rect x="13" y="4" width="6" height="1"/><rect x="1" y="5" width="17" height="1"/><rect x="2" y="6" width="15" height="1"/><rect x="3" y="7" width="2" height="1"/><rect x="8" y="7" width="3" height="1"/><rect x="14" y="7" width="2" height="1"/><rect x="2" y="8" width="2" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="9" y="8" width="1" height="1"/><rect x="13" y="8" width="1" height="1"/><rect x="15" y="8" width="2" height="1"/><rect x="2" y="9" width="2" height="1"/><rect x="6" y="9" width="2" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="12" y="9" width="2" height="1"/><rect x="15" y="9" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="6" y="10" width="2" height="1"/><rect x="9" y="10" width="1" height="1"/><rect x="12" y="10" width="2" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="2" y="11" width="3" height="1"/><rect x="8" y="11" width="3" height="1"/><rect x="14" y="11" width="3" height="1"/><rect x="2" y="12" width="7" height="1"/><rect x="10" y="12" width="7" height="1"/><rect x="3" y="13" width="4" height="1"/><rect x="8" y="13" width="8" height="1"/><rect x="3" y="14" width="5" height="1"/><rect x="11" y="14" width="5" height="1"/><rect x="4" y="15" width="11" height="1"/><rect x="6" y="16" width="7" height="1"/></svg><span style="font: 600 21px -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing: -0.01em; color: #ffffff; line-height: 1">kobe.bot</span></a>
+<div class="kb-navlinks" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px clamp(16px, 2.4vw, 32px)"><a href="/home/" class="kb-navlink">Home</a><a href="/monitor/" class="kb-navlink">Monitor</a><a href="/use-cases/" class="kb-navlink">Use cases</a><a href="/legal/" class="kb-navlink" aria-current="page">Legal</a></div>
+</nav>
+<div style="position: relative; z-index: 0">
+<div aria-hidden="true" style="position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px); background-size: 12px 12px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 360px); mask-image: linear-gradient(to bottom, transparent 0, #000 360px)"></div>
+<main>
+<header class="lg-wrap lg-head">
+<span class="lg-label">Legal &nbsp;|&nbsp; Law firms and investigators</span>
+<h1 class="lg-h1"><span>Legal</span><small>the interrogation room</small></h1>
+<p class="lg-lede">Jev reads the whole file so you don't have to. Every fact gets a tag and a source. Then he tells you who isn't telling the truth.</p>
+</header>
+
+<section class="lg-wrap" aria-label="Jev at work, an animated demo">
+<div class="lg-stage">
+<div class="lg-room">
+<svg viewBox="0 0 600 440" role="img" aria-label="Jev, the kobe.bot bear, sits at a table under a hanging lamp in an interrogation room, reading a report">
+<defs>
+<linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.16"/><stop offset="1" stop-color="#fff" stop-opacity="0.02"/></linearGradient>
+</defs>
+<!-- back wall + floor -->
+<path class="ln faint" d="M0 300 H600"/>
+<path class="ln faint" d="M0 330 H600 M0 368 H600 M0 416 H600"/>
+<path class="ln faint" d="M300 300 L40 440 M300 300 L180 440 M300 300 L420 440 M300 300 L560 440"/>
+<!-- one-way mirror -->
+<rect class="ln dim" x="26" y="70" width="170" height="150"/>
+<rect class="ln faint" x="34" y="78" width="154" height="134"/>
+<path class="ln faint" d="M60 78 L34 112 M110 78 L34 178 M150 78 L56 212 M188 92 L130 212"/>
+<!-- clock -->
+<circle class="ln dim" cx="520" cy="96" r="24"/>
+<path class="ln dim" id="hand" d="M520 96 V80"/>
+<path class="ln dim" d="M520 96 L530 100"/>
+<!-- file cabinet / read pile -->
+<rect class="ln dim" x="470" y="190" width="96" height="110"/>
+<path class="ln dim" d="M470 226 H566 M470 262 H566 M508 207 H528 M508 243 H528 M508 279 H528"/>
+<g id="pile"></g>
+<!-- lamp -->
+<g class="lamp">
+<path class="ln" d="M300 0 V78"/>
+<path class="ln" d="M282 78 H318 L340 106 H260 Z"/>
+<polygon class="cone" points="262,106 338,106 450,312 150,312" fill="url(#beam)"/>
+</g>
+<!-- chair back -->
+<path class="ln dim" d="M246 150 V238 M354 150 V238 M246 150 H354"/>
+<!-- bear -->
+<g class="bear"><g transform="translate(243 132) scale(6)" fill="#fff" style="shape-rendering:crispEdges"><rect x="2" y="0" width="4" height="1"/><rect x="13" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="1"/><rect x="12" y="1" width="6" height="1"/><rect x="0" y="2" width="7" height="1"/><rect x="12" y="2" width="7" height="1"/><rect x="0" y="3" width="7" height="1"/><rect x="12" y="3" width="7" height="1"/><rect x="0" y="4" width="6" height="1"/><rect x="7" y="4" width="5" height="1"/><rect x="13" y="4" width="6" height="1"/><rect x="1" y="5" width="17" height="1"/><rect x="2" y="6" width="15" height="1"/><rect x="3" y="7" width="2" height="1"/><rect x="8" y="7" width="3" height="1"/><rect x="14" y="7" width="2" height="1"/><rect x="2" y="8" width="2" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="9" y="8" width="1" height="1"/><rect x="13" y="8" width="1" height="1"/><rect x="15" y="8" width="2" height="1"/><rect x="2" y="9" width="2" height="1"/><rect x="6" y="9" width="2" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="12" y="9" width="2" height="1"/><rect x="15" y="9" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="6" y="10" width="2" height="1"/><rect x="9" y="10" width="1" height="1"/><rect x="12" y="10" width="2" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="2" y="11" width="3" height="1"/><rect x="8" y="11" width="3" height="1"/><rect x="14" y="11" width="3" height="1"/><rect x="2" y="12" width="7" height="1"/><rect x="10" y="12" width="7" height="1"/><rect x="3" y="13" width="4" height="1"/><rect x="8" y="13" width="8" height="1"/><rect x="3" y="14" width="5" height="1"/><rect x="11" y="14" width="5" height="1"/><rect x="4" y="15" width="11" height="1"/><rect x="6" y="16" width="7" height="1"/></g></g>
+<!-- table (geometric, like the site icons) -->
+<polygon class="ln" points="300,236 470,272 300,308 130,272" fill="#000"/>
+<polyline class="ln" points="130,272 130,280 300,316 470,280 470,272"/>
+<path class="ln" d="M300 308 V316 M150 284 V372 M450 284 V372 M300 316 V400"/>
+<!-- stack on the table -->
+<g id="stack"><polygon class="ln dim" points="190,262 246,250 276,258 220,270" fill="#000"/><polygon class="ln dim" points="190,258 246,246 276,254 220,266" fill="#000"/></g>
+<!-- sheet in hand -->
+<g class="sheet" id="sheet"><rect class="ln" x="270" y="200" width="60" height="46" fill="#000"/><path class="ln dim" d="M278 210 H322 M278 217 H318 M278 224 H322 M278 231 H312 M278 238 H320"/></g>
+<!-- speech bubble -->
+<g class="bubble" id="bubble"><path d="M372 120 H500 V176 H404 L388 194 L390 176 H372 Z" fill="#fff"/><text x="386" y="160">LIAR.</text></g>
+</svg>
+<div class="room-cap"><span class="rec">Room 2 &nbsp;|&nbsp; Recording</span><span id="runlbl">Run 01</span></div>
+</div>
+
+<div class="lg-file" aria-live="polite">
+<div class="cf-row"><span class="lg-label" id="caseid">Case file</span><span class="cf-status" id="cstatus">Reading</span></div>
+<div class="cf-sus">
+<div class="mug"><svg viewBox="0 0 86 100" aria-hidden="true"><path class="ln faint" d="M0 20 H86 M0 40 H86 M0 60 H86 M0 80 H86"/><circle class="ln" cx="43" cy="40" r="17"/><path class="ln" d="M12 100 C14 72 30 64 43 64 C56 64 72 72 74 100"/></svg><div class="liar" id="liar">LIAR.</div></div>
+<div style="min-width:0">
+<span class="lg-label" id="sustype">Suspect</span>
+<h2 class="sus-name" id="susname">&nbsp;</h2>
+<p class="sus-role" id="susrole">&nbsp;</p>
+<p class="sus-claim" id="susclaim">&nbsp;</p>
+</div>
+</div>
+<div class="cf-doc">
+<div class="doc-top"><span class="doc-name" id="docname">&nbsp;</span><span class="doc-page" id="docpage">p. 0 / 0</span></div>
+<div class="doc-lines" id="doclines" aria-hidden="true"></div>
+<div class="doc-bar"><b id="docbar"></b></div>
+</div>
+<ul class="facts" id="facts"></ul>
+<div class="verdict" id="verdict"><span class="lg-label">The contradiction</span><p id="vtext">&nbsp;</p></div>
+</div>
+</div>
+<p class="lg-made">Demo. Every name, case and document on this page is made up.</p>
+</section>
+
+<section class="lg-wrap lg-pitch" aria-labelledby="pitch-h">
+<h2 class="lg-h2" id="pitch-h">Findings you can defend.</h2>
+<div class="lg-grid">
+<article class="lg-card">
+<span class="lg-label">01 &nbsp;|&nbsp; Case files</span>
+<h3>Every fact gets a tag</h3>
+<p>Jev reads case files and public records. Each fact comes back confirmed, inferred or not found, with the page or record it came from.</p>
+<svg viewBox="0 0 300 96" aria-hidden="true"><g class="ln"><rect x="0.5" y="6" width="88" height="20" style="stroke:#9DFFB0"/><rect x="0.5" y="38" width="88" height="20" style="stroke:#FCB400"/><rect x="0.5" y="70" width="88" height="20" style="stroke:#a8a8a8;stroke-dasharray:3 3"/><path class="dim" d="M104 16 H290 M104 48 H250 M104 80 H270"/></g><text x="10" y="20" style="fill:#9DFFB0">CONFIRMED</text><text x="10" y="52" style="fill:#FCB400">INFERRED</text><text x="10" y="84" style="fill:#a8a8a8">NOT FOUND</text></svg>
+</article>
+<article class="lg-card">
+<span class="lg-label">02 &nbsp;|&nbsp; Contracts</span>
+<h3>Two versions, side by side</h3>
+<p>Give Jev two drafts. He lines them up clause by clause and flags what changed, what contradicts and what is missing.</p>
+<svg viewBox="0 0 300 96" aria-hidden="true"><g class="ln"><rect x="0.5" y="0.5" width="130" height="95"/><rect x="169.5" y="0.5" width="130" height="95"/><path class="dim" d="M12 16 H118 M12 30 H104 M181 16 H287 M181 30 H273 M12 72 H112 M181 72 H281"/><path d="M12 48 H110" style="stroke:#9DFFB0"/><path d="M181 48 H262" style="stroke:#FF5A4F"/><path d="M136 48 H164" style="stroke:#FF5A4F;stroke-dasharray:3 3"/><path d="M12 86 H90" style="stroke:#FCB400"/><path d="M181 86 H220" style="stroke:#a8a8a8;stroke-dasharray:3 3"/></g></svg>
+</article>
+<article class="lg-card">
+<span class="lg-label">03 &nbsp;|&nbsp; The catch</span>
+<h3>Contradictions, flagged</h3>
+<p>When a statement and a record don't match, Jev puts the two side by side and names the source of each. You check it in seconds.</p>
+<svg viewBox="0 0 300 96" aria-hidden="true"><g class="ln"><rect x="0.5" y="20" width="120" height="56"/><rect x="179.5" y="20" width="120" height="56"/><path d="M126 48 H174 M140 36 L160 60 M160 36 L140 60" style="stroke:#FF5A4F"/><path class="dim" d="M12 36 H108 M12 48 H96 M12 60 H104 M191 36 H287 M191 48 H275 M191 60 H281"/></g></svg>
+</article>
+</div>
+<p class="lg-note">Lawyers pay for findings they can defend. Jev only says what the record says.</p>
+<div class="cta" id="consult">
+<span class="lg-label">Free first consultation</span>
+<h2 class="lg-h2">Bring us one case file.</h2>
+<p class="lg-lede">We'll run it with Jev on a free first call and show you every tag and every source.</p>
+<form id="cform" novalidate>
+<label for="cemail" class="lg-label" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Work email</label>
+<input id="cemail" type="email" name="email" placeholder="you@yourfirm.com" autocomplete="email" required>
+<button type="submit">Book my free consultation</button>
+</form>
+<p class="cta-msg" id="cmsg"></p>
+</div>
+</section>
+</main>
+<footer class="lg-foot"><span>KOBE.BOT</span><span>EVERY RUN, ON THE RECORD.</span></footer>
+</div>
+</div>
+<script>
+(function(){
+var CONTACT = '';
+var CASES = [
+ {id:'Case 0417', type:'Personal injury', who:'Witness', name:'Dale Pruitt', role:'Driver of the sedan', claim:'“I was fully stopped at the red light.”',
+  doc:'Witness statement + police report', pages:38,
+  facts:[
+   ['c','Collision at Fenwick Ave and 9th St, 6:42 pm, March 3.','Police report PR-55120, p. 1'],
+   ['c','The light was red for Pruitt’s direction at 6:42 pm.','City signal log, Fenwick/9th, 18:42:07'],
+   ['i','Road was wet when the collision happened.','Weather station 2 miles away, rain at 6:30 pm'],
+   ['c','Pruitt’s dashcam shows the sedan moving at 31 mph at impact.','Dashcam file DC-0303, 0:14'],
+  ], hit:[0,3], verdict:'Said he was stopped. His own dashcam says 31 mph at impact.'},
+ {id:'Case 0522', type:'Insurance claim', who:'Claimant', name:'Marla Venn', role:'Filed a burglary claim', claim:'“The bike was stolen on June 12 and I never saw it again.”',
+  doc:'Claim file + public records', pages:54,
+  facts:[
+   ['c','Claim filed June 14 for a road bike, $4,180.','Claim form CL-88213, p. 2'],
+   ['c','Purchase receipt matches the serial number on the claim.','Receipt, Northline Cycles, p. 9'],
+   ['n','No police report for a burglary at this address in June.','County records search, June 1–30'],
+   ['c','Same serial number listed for sale online on June 20.','Public listing, archived June 20'],
+  ], hit:[0,3], verdict:'Said she never saw the bike again after June 12. The same serial number was listed for sale on June 20.'},
+ {id:'Case 0608', type:'Contract review', who:'Counterparty', name:'Graham Holt', role:'Vendor, sent version 2', claim:'“Version 2 is the same contract, just cleaned up.”',
+  doc:'Supply agreement, v1 vs v2', pages:71,
+  facts:[
+   ['c','Payment terms are Net 30 in both versions.','v1 §4.2, v2 §4.2'],
+   ['c','Termination notice: 60 days in v1, 10 days in v2.','v1 §11.1, v2 §11.1'],
+   ['n','v2 late fee of 3% a month has no match in v1.','v2 §4.6, not found in v1'],
+   ['i','The renewal now happens automatically unless cancelled.','v2 §12.3, wording changed from v1'],
+  ], hit:[1,2], verdict:'Said v2 was “just cleaned up.” Notice dropped from 60 days to 10, and a new late fee appeared.'},
+ {id:'Case 0731', type:'Premises liability', who:'Witness', name:'Trent Okafor', role:'Store shift manager', claim:'“I mopped aisle 7 and set out the sign at 2:00 pm myself.”',
+  doc:'Incident file + store records', pages:46,
+  facts:[
+   ['c','Customer fell in aisle 7 at 2:20 pm.','Incident report IR-7741, p. 1'],
+   ['c','Cleaning log signed by Okafor for aisle 7 at 2:00 pm.','Cleaning log, July 31, line 14'],
+   ['i','A wet-floor sign may be at the far end of the aisle.','Customer photo, partly blocked'],
+   ['c','Okafor clocked out at 1:15 pm that day.','Timesheet export, July 31'],
+  ], hit:[1,3], verdict:'Signed the 2:00 pm cleaning log. His timesheet says he clocked out at 1:15.'}
+];
+var TAG = {c:['CONFIRMED','t-c'], i:['INFERRED','t-i'], n:['NOT FOUND','t-n']};
+var $ = function(id){return document.getElementById(id)};
+var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+var wait = function(ms){return new Promise(function(r){setTimeout(r, ms)})};
+var run = 0, pileN = 0;
+var lines = $('doclines');
+for (var k=0;k<5;k++){ var i=document.createElement('i'); lines.appendChild(i); }
+function scribble(){ [].forEach.call(lines.children, function(el){ el.style.transform='scaleX('+(0.45+Math.random()*0.55).toFixed(2)+')'; }); }
+function flip(){ var s=$('sheet'); s.classList.remove('flip'); void s.getBoundingClientRect(); s.classList.add('flip'); }
+function addPile(){
+  pileN = (pileN % 6) + 1;
+  var g=$('pile'); g.innerHTML='';
+  for (var n=0;n<pileN;n++){ var y=186-n*5; g.insertAdjacentHTML('beforeend','<polygon class="ln dim" fill="#000" points="474,'+(y)+' 520,'+(y-8)+' 562,'+(y)+' 516,'+(y+8)+'"/>'); }
+}
+function tick(){ var a=(Date.now()/1000*6)%360*Math.PI/180; $('hand').setAttribute('d','M520 96 L'+(520+16*Math.sin(a)).toFixed(1)+' '+(96-16*Math.cos(a)).toFixed(1)); }
+setInterval(tick, 1000); tick();
+
+async function play(c){
+  run++;
+  $('runlbl').textContent = 'Run ' + String(run).padStart(2,'0');
+  $('caseid').textContent = c.id + '  |  ' + c.type;
+  $('cstatus').textContent = 'Reading'; $('cstatus').style.color = '#FCB400';
+  $('sustype').textContent = c.who;
+  $('susname').textContent = c.name; $('susrole').textContent = c.role; $('susclaim').textContent = c.claim;
+  $('docname').textContent = c.doc;
+  $('liar').classList.remove('on'); $('bubble').classList.remove('on'); $('verdict').classList.remove('on');
+  var ul = $('facts'); ul.innerHTML = '';
+  var steps = c.facts.length, per = Math.ceil(c.pages/(steps+1));
+  var page = 0;
+  async function read(to){
+    while (page < to){ page = Math.min(to, page + Math.ceil(per/6)); $('docpage').textContent = 'p. '+page+' / '+c.pages; $('docbar').style.width = (page/c.pages*100)+'%'; scribble(); if (Math.random()<0.5) flip(); await wait(reduce?140:230); }
+  }
+  await wait(600);
+  for (var f=0; f<steps; f++){
+    await read(Math.min(c.pages, per*(f+1)));
+    var t = TAG[c.facts[f][0]];
+    var li = document.createElement('li'); li.className='fact';
+    li.innerHTML = '<span class="tag '+t[1]+'">'+t[0]+'</span><p class="ftxt"></p>';
+    li.querySelector('.ftxt').textContent = c.facts[f][1];
+    var src = document.createElement('span'); src.className='fsrc'; src.textContent = 'Source: ' + c.facts[f][2];
+    li.querySelector('.ftxt').appendChild(src);
+    ul.appendChild(li); void li.offsetWidth; li.classList.add('on');
+    await wait(900);
+  }
+  await read(c.pages);
+  $('cstatus').textContent = 'Run done'; $('cstatus').style.color = '#9DFFB0';
+  await wait(700);
+  c.hit.forEach(function(h){ ul.children[h].classList.add('hit'); });
+  $('vtext').textContent = c.verdict; $('verdict').classList.add('on');
+  await wait(1100);
+  $('liar').classList.add('on'); $('bubble').classList.add('on');
+  $('cstatus').textContent = 'Liar'; $('cstatus').style.color = '#FF5A4F';
+  addPile();
+  await wait(4200);
+}
+(async function loop(){ var n=0; for(;;){ await play(CASES[n % CASES.length]); n++; } })();
+
+$('cform').addEventListener('submit', function(e){
+  e.preventDefault();
+  var v = $('cemail').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){ $('cmsg').textContent = 'Please enter a work email.'; $('cemail').focus(); return; }
+  if (!CONTACT){ $('cmsg').textContent = 'Bookings open soon. Thanks for your patience.'; return; }
+  var body = 'Hi, I would like a free first consultation for kobe.bot legal.\n\nMy email: ' + v;
+  window.location.href = 'mailto:' + CONTACT + '?subject=' + encodeURIComponent('Free first consultation: kobe.bot legal') + '&body=' + encodeURIComponent(body);
+  $('cmsg').textContent = 'Opening your email app. Hit send and we will reply to book a time.';
+});
+})();
+</script>
+</body>
+</html>
