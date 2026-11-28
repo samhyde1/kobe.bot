@@ -4263,7 +4263,7 @@ three/build/three.module.js:
   setTimeout(function(){
     if(reduce){draw("open");el.classList.add("kb-here");return;}
     draw("wee");el.classList.add("kb-here","kb-arrive");
-    setTimeout(function(){draw("happy");play("kb-hop");setTimeout(step,1200);},3200);
+    setTimeout(function(){el.classList.remove("kb-arrive");draw("happy");play("kb-hop");setTimeout(step,1200);},3200);
   },wait);
 })();
 </script>
