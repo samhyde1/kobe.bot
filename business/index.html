@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Google Review Mastery · kobe.bot</title>
+<meta name="description" content="Kobe finds every 1-star review of your competitor, finds the person who wrote it, and sends one honest message.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&amp;display=swap" rel="stylesheet">
+<style>
+html{background:#000;color-scheme:dark;-webkit-text-size-adjust:100%}
+body{margin:0;background:#000}
+#top{overflow-x:hidden;overflow-x:clip;background:#000;color:#fff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;min-height:100vh;position:relative;padding-bottom:8px}
+.kb-navlink{font:700 12px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;color:#fff;padding:6px 0;border-bottom:1px solid transparent;white-space:nowrap}
+.kb-navlink[aria-current="page"]{border-bottom-color:#fff}
+a:focus-visible{outline:2px solid #3FD0C9;outline-offset:3px}
+a{color:inherit}a:hover{opacity:0.7}
+.bz-wrap{max-width:1280px;margin:0 auto;box-sizing:border-box;padding-left:clamp(20px,4vw,56px);padding-right:clamp(20px,4vw,56px)}
+.bz-label{font:700 11px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#a8a8a8}
+.ex{display:inline-block;font:700 9px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#a8a8a8;border:1px dashed #a8a8a8;padding:4px 5px 3px;vertical-align:middle}
+.bz-h1{margin:0;font:italic 700 clamp(52px,7vw,108px)/0.88 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.035em}
+.bz-lede{margin:0;font:400 18px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:640px}
+.bz-head{display:flex;flex-direction:column;gap:24px;padding-top:clamp(48px,7vw,96px)}
+
+.bz-stage{margin-top:clamp(36px,5vw,64px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);border:1px solid rgba(255,255,255,0.3)}
+.bz-room{position:relative;border-right:1px solid rgba(255,255,255,0.3);min-width:0;display:flex;flex-direction:column}
+.bz-room svg{display:block;width:100%;height:auto}
+.ln{stroke:#fff;stroke-width:1;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.dim{stroke:rgba(255,255,255,0.35)}
+.faint{stroke:rgba(255,255,255,0.14)}
+.bear{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+.env{opacity:0}
+.env.fly{animation:fly 1.1s cubic-bezier(.5,0,.3,1) forwards}
+@keyframes fly{0%{opacity:0;transform:translate(0,0) scale(.6)}15%{opacity:1}100%{opacity:0;transform:translate(190px,-130px) scale(1)}}
+.ping{opacity:0}
+.ping.on{animation:ping 1.2s ease-out}
+@keyframes ping{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-26px)}}
+.cap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:0 14px 12px}
+.cap span{font:700 10px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#a8a8a8}
+.live{color:#9DFFB0!important}
+.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#9DFFB0;margin-right:7px;vertical-align:1px;animation:blink 1.2s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(255,255,255,0.3);margin-top:auto}
+.stat{padding:12px 14px;border-right:1px solid rgba(255,255,255,0.14);display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat:last-child{border-right:0}
+.stat b{font:700 clamp(22px,2.6vw,32px)/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.stat.rate b{color:#9DFFB0}
+
+.bz-panel{padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0;background:#111;min-height:600px;box-sizing:border-box}
+.pp-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:2px solid #fff;padding-bottom:10px}
+.pp-status{font:700 11px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#FCB400;white-space:nowrap}
+.step{border:1px solid rgba(255,255,255,0.18);background:#000;padding:10px 12px;display:flex;flex-direction:column;gap:6px;opacity:.25;transition:opacity .3s,border-color .3s}
+.step.on{opacity:1;border-color:rgba(255,255,255,0.5)}
+.step .k{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.stars{color:#FCB400;letter-spacing:2px;font-size:14px}
+.stars s{color:rgba(255,255,255,0.25);text-decoration:none}
+.step p{margin:0;font:400 14px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif}
+.step .q{font:italic 400 17px/1.3 'IM Fell English',Georgia,serif}
+.step .mut{color:#a8a8a8;font-size:12px}
+.ok{color:#9DFFB0;font:700 10px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.14em;opacity:0;transition:opacity .2s}
+.step.done .ok{opacity:1}
+.msg{white-space:pre-wrap;min-height:4.2em}
+.msg::after{content:"▍";color:#3FD0C9;animation:blink 1s steps(1) infinite}
+.msg.sent::after{content:""}
+.big{margin-top:auto;background:#fff;color:#000;padding:14px 16px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s}
+.big.on{opacity:1;transform:none}
+.big b{font:italic 700 clamp(56px,7vw,88px)/0.9 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.04em}
+.big span{font:700 18px/1.2 'Helvetica Neue',Helvetica,Arial,sans-serif}
+.big .ex{color:#000;border-color:#000}
+.bz-made{margin:10px 0 0;font:400 12px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#a8a8a8}
+
+.bz-sec{padding-top:clamp(64px,8vw,112px);display:flex;flex-direction:column;gap:clamp(28px,4vw,48px)}
+.bz-h2{margin:0;font:700 clamp(36px,5vw,64px)/0.95 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.03em}
+.bz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:8px}
+.bz-card{background:#111;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.bz-card h3{margin:0;font:700 26px/1.05 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.02em}
+.bz-card p{margin:0;font:400 16px/1.45 'Helvetica Neue',Helvetica,Arial,sans-serif}
+.bz-note{margin:0;align-self:flex-start;background:#fff;color:#000;padding:10px 16px;font:700 18px/1.35 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.01em}
+.bz-foot{max-width:1280px;margin:0 auto;padding:96px clamp(20px,4vw,56px) 48px;box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#a8a8a8}
+@media (max-width:900px){.bz-stage{grid-template-columns:minmax(0,1fr)}.bz-room{border-right:0;border-bottom:1px solid rgba(255,255,255,0.3)}}
+@media (max-width:520px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,0.14)}.bz-panel{min-height:660px}}
+@media (prefers-reduced-motion:reduce){.bear,.live::before,.msg::after{animation:none}.env.fly,.ping.on{animation:none}}
+</style>
+</head>
+<body>
+<div id="top">
+<nav aria-label="Main" class="kb-nav" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding: 20px clamp(20px, 4vw, 56px); border-bottom: 1px solid rgba(255,255,255,0.3)">
+<a href="/" aria-label="kobe.bot, back to the intro" style="display: flex; align-items: center; gap: 12px; text-decoration: none"><svg role="img" aria-label="kobe.bot bear logo" viewBox="0 0 19 17" width="38" height="34" style="display:block;fill:#ffffff;shape-rendering:crispEdges"><rect x="2" y="0" width="4" height="1"/><rect x="13" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="1"/><rect x="12" y="1" width="6" height="1"/><rect x="0" y="2" width="7" height="1"/><rect x="12" y="2" width="7" height="1"/><rect x="0" y="3" width="7" height="1"/><rect x="12" y="3" width="7" height="1"/><rect x="0" y="4" width="6" height="1"/><rect x="7" y="4" width="5" height="1"/><rect x="13" y="4" width="6" height="1"/><rect x="1" y="5" width="17" height="1"/><rect x="2" y="6" width="15" height="1"/><rect x="3" y="7" width="2" height="1"/><rect x="8" y="7" width="3" height="1"/><rect x="14" y="7" width="2" height="1"/><rect x="2" y="8" width="2" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="9" y="8" width="1" height="1"/><rect x="13" y="8" width="1" height="1"/><rect x="15" y="8" width="2" height="1"/><rect x="2" y="9" width="2" height="1"/><rect x="6" y="9" width="2" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="12" y="9" width="2" height="1"/><rect x="15" y="9" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="6" y="10" width="2" height="1"/><rect x="9" y="10" width="1" height="1"/><rect x="12" y="10" width="2" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="2" y="11" width="3" height="1"/><rect x="8" y="11" width="3" height="1"/><rect x="14" y="11" width="3" height="1"/><rect x="2" y="12" width="7" height="1"/><rect x="10" y="12" width="7" height="1"/><rect x="3" y="13" width="4" height="1"/><rect x="8" y="13" width="8" height="1"/><rect x="3" y="14" width="5" height="1"/><rect x="11" y="14" width="5" height="1"/><rect x="4" y="15" width="11" height="1"/><rect x="6" y="16" width="7" height="1"/></svg><span style="font: 600 21px -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing: -0.01em; color: #ffffff; line-height: 1">kobe.bot</span></a>
+<div class="kb-navlinks" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px clamp(16px, 2.4vw, 32px)"><a href="/home/" class="kb-navlink">Home</a><a href="/monitor/" class="kb-navlink">Monitor</a><a href="/use-cases/" class="kb-navlink">Use cases</a><a href="/legal/" class="kb-navlink">Interrogation room</a><a href="/finance/" class="kb-navlink">Finance</a><a href="/business/" class="kb-navlink" aria-current="page">Business</a></div>
+</nav>
+<div style="position: relative; z-index: 0">
+<div aria-hidden="true" style="position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px); background-size: 12px 12px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 360px); mask-image: linear-gradient(to bottom, transparent 0, #000 360px)"></div>
+<main>
+<header class="bz-wrap bz-head">
+<span class="bz-label">Business &nbsp;|&nbsp; Sales outreach</span>
+<h1 class="bz-h1">Google Review Mastery</h1>
+<p class="bz-lede">Every 1-star review of your competitor is someone telling the world what they wish they had. Kobe finds those reviews, finds the person who wrote them, and sends one honest message.</p>
+</header>
+
+<section class="bz-wrap" aria-label="Kobe at work, an animated demo">
+<div class="bz-stage">
+<div class="bz-room">
+<svg viewBox="0 0 600 380" role="img" aria-label="Kobe, the kobe.bot bear, at a laptop, sending envelopes to a mailbox while one-star review cards pile up beside him">
+<!-- floor -->
+<path class="ln faint" d="M0 300 H600 M0 336 H600"/>
+<!-- review wall (sources) -->
+<g id="wall"></g>
+<text x="40" y="34" style="fill:#a8a8a8;font:700 9px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em">1-STAR REVIEWS</text>
+<!-- desk -->
+<polygon class="ln" points="300,236 470,266 300,296 130,266" fill="#000"/>
+<polyline class="ln" points="130,266 130,274 300,304 470,274 470,266"/>
+<path class="ln" d="M150 278 V360 M450 278 V360 M300 304 V372"/>
+<!-- bear -->
+<g class="bear"><g transform="translate(243 128) scale(6)" fill="#fff" style="shape-rendering:crispEdges"><rect x="2" y="0" width="4" height="1"/><rect x="13" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="1"/><rect x="12" y="1" width="6" height="1"/><rect x="0" y="2" width="7" height="1"/><rect x="12" y="2" width="7" height="1"/><rect x="0" y="3" width="7" height="1"/><rect x="12" y="3" width="7" height="1"/><rect x="0" y="4" width="6" height="1"/><rect x="7" y="4" width="5" height="1"/><rect x="13" y="4" width="6" height="1"/><rect x="1" y="5" width="17" height="1"/><rect x="2" y="6" width="15" height="1"/><rect x="3" y="7" width="2" height="1"/><rect x="8" y="7" width="3" height="1"/><rect x="14" y="7" width="2" height="1"/><rect x="2" y="8" width="2" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="9" y="8" width="1" height="1"/><rect x="13" y="8" width="1" height="1"/><rect x="15" y="8" width="2" height="1"/><rect x="2" y="9" width="2" height="1"/><rect x="6" y="9" width="2" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="12" y="9" width="2" height="1"/><rect x="15" y="9" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="6" y="10" width="2" height="1"/><rect x="9" y="10" width="1" height="1"/><rect x="12" y="10" width="2" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="2" y="11" width="3" height="1"/><rect x="8" y="11" width="3" height="1"/><rect x="14" y="11" width="3" height="1"/><rect x="2" y="12" width="7" height="1"/><rect x="10" y="12" width="7" height="1"/><rect x="3" y="13" width="4" height="1"/><rect x="8" y="13" width="8" height="1"/><rect x="3" y="14" width="5" height="1"/><rect x="11" y="14" width="5" height="1"/><rect x="4" y="15" width="11" height="1"/><rect x="6" y="16" width="7" height="1"/></g></g>
+<!-- laptop -->
+<polygon class="ln" points="262,214 338,214 350,252 250,252" fill="#000"/>
+<path class="ln" d="M240 256 H360 L352 262 H248 Z" fill="#000"/>
+<rect x="296" y="226" width="8" height="8" fill="#3FD0C9" opacity="0.8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.6s" repeatCount="indefinite"/></rect>
+<!-- mailbox -->
+<rect class="ln" x="486" y="96" width="78" height="52" rx="26" fill="#000"/>
+<path class="ln" d="M525 148 V300 M506 300 H544"/>
+<path class="ln" d="M564 112 V86 H584 V100 H564" style="stroke:#FF5A4F"/>
+<g class="ping" id="ping"><rect x="498" y="58" width="56" height="22" fill="#9DFFB0"/><text x="526" y="73" text-anchor="middle" style="fill:#000;font:800 10px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.12em">REPLY</text></g>
+<!-- envelope -->
+<g class="env" id="env" style="transform-box:fill-box"><g transform="translate(310 190)"><rect class="ln" width="34" height="22" fill="#000"/><path class="ln" d="M0 0 L17 12 L34 0"/></g></g>
+</svg>
+<div class="cap"><span class="live">Outreach &nbsp;|&nbsp; Running</span><span id="who">Niche: dental scheduling software</span></div>
+<div class="stats" aria-live="off">
+<div class="stat"><span class="bz-label">Reviews</span><b id="sR">0</b></div>
+<div class="stat"><span class="bz-label">People</span><b id="sP">0</b></div>
+<div class="stat"><span class="bz-label">Sent</span><b id="sS">0</b></div>
+<div class="stat rate"><span class="bz-label">Replies</span><b id="sY">0</b></div>
+</div>
+</div>
+
+<div class="bz-panel" aria-live="polite">
+<div class="pp-row"><span class="bz-label" id="cnt">Review 1</span><span class="pp-status" id="pstatus">Finding</span></div>
+<div class="step" id="st1"><div class="k"><span class="bz-label">1 &nbsp;|&nbsp; Review found <span id="src"></span></span><span class="ok">FOUND</span></div><span class="stars">★<s>★★★★</s></span><p class="q" id="rq">&nbsp;</p><p class="mut" id="rby">&nbsp;</p></div>
+<div class="step" id="st2"><div class="k"><span class="bz-label">2 &nbsp;|&nbsp; Person matched</span><span class="ok">MATCHED</span></div><p id="li">&nbsp;</p><p class="mut" id="em">&nbsp;</p></div>
+<div class="step" id="st3"><div class="k"><span class="bz-label">3 &nbsp;|&nbsp; One message</span><span class="ok">SENT</span></div><p class="msg" id="msg"></p></div>
+<div class="big" id="big"><b>11%</b><span>reply rate</span><span class="ex">Example</span></div>
+</div>
+</div>
+<p class="bz-made">Demo. Every company, reviewer and competitor on this page is made up. Numbers are an example.</p>
+</section>
+
+<section class="bz-wrap bz-sec" aria-labelledby="how-h">
+<h2 class="bz-h2" id="how-h">One-star reviews are a list of buyers.</h2>
+<div class="bz-grid">
+<article class="bz-card"><span class="bz-label">01 &nbsp;|&nbsp; Find</span><h3>Every 1-star review</h3><p>Kobe reads Trustpilot and G2 for every 1-star review of the competitors in your niche.</p></article>
+<article class="bz-card"><span class="bz-label">02 &nbsp;|&nbsp; Match</span><h3>The person behind it</h3><p>He finds the reviewer’s LinkedIn and their work email, so the message reaches the person who had the problem.</p></article>
+<article class="bz-card"><span class="bz-label">03 &nbsp;|&nbsp; Send</span><h3>One honest message</h3><p>“Saw your review of [competitor]. We built our product specifically because of complaints like yours, so I feel you.”</p></article>
+</div>
+<p class="bz-note">They already told you what they want. Kobe makes sure you’re the one who answers.</p>
+</section>
+</main>
+<footer class="bz-foot"><span>KOBE.BOT</span><span>EVERY RUN, ON THE RECORD.</span></footer>
+</div>
+</div>
+<script>
+(function(){
+var COMP = 'ChairTime';
+var R = [
+ {src:'Trustpilot', q:'Double-booked three patients on a Monday. Support took four days to answer.', by:'Priya N. · Office manager', li:'Practice Manager at Lakeside Family Dental', em:'p••••@lakeside••••.com'},
+ {src:'G2', q:'Every update breaks the reminders. Our no-shows went up.', by:'Tom R. · Clinic owner', li:'Owner at Ridgeview Smiles', em:'t••@ridgeview••••.com'},
+ {src:'Trustpilot', q:'Charged us for six seats after we cancelled two.', by:'Dana K. · Front desk lead', li:'Front Desk Lead at Harbor Point Dental', em:'d••••@harborpoint••.com'},
+ {src:'G2', q:'The calendar is so slow we keep a paper backup.', by:'Marcus O. · Operations', li:'Operations Director at Northfield Dental Group', em:'m••••@northfield••••.com'}
+];
+var FINAL = {r:412, p:286, s:286, y:31};
+var $ = function(id){return document.getElementById(id)};
+var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+var wait = function(ms){return new Promise(function(r){setTimeout(r, reduce?ms*0.5:ms)})};
+var st = {r:0,p:0,s:0,y:0};
+function show(){ $('sR').textContent=st.r; $('sP').textContent=st.p; $('sS').textContent=st.s; $('sY').textContent=st.y; }
+function wall(n){
+  var g=$('wall'), h='';
+  for (var i=0;i<n;i++){ var x=40+(i%3)*58, y=46+Math.floor(i/3)*40;
+    h+='<rect class="ln '+(i===n-1?'':'dim')+'" x="'+x+'" y="'+y+'" width="50" height="32" fill="#000"/><rect x="'+(x+6)+'" y="'+(y+7)+'" width="6" height="6" fill="#FCB400"/><path class="ln faint" d="M'+(x+16)+' '+(y+10)+' H'+(x+44)+' M'+(x+6)+' '+(y+20)+' H'+(x+44)+' M'+(x+6)+' '+(y+26)+' H'+(x+34)+'"/>'; }
+  g.innerHTML=h;
+}
+function bump(k, to, ms){ return new Promise(function(res){ var from=st[k], t0=performance.now(); (function f(now){ var p=Math.min(1,(now-t0)/ms); st[k]=Math.round(from+(to-from)*p); show(); if(p<1) requestAnimationFrame(f); else res(); })(t0); }); }
+function retrigger(el, cls){ el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls); }
+async function type(el, text){ el.classList.remove('sent'); el.textContent=''; for (var i=0;i<text.length;i++){ el.textContent+=text[i]; if (!reduce) await new Promise(function(r){setTimeout(r,18)}); } if (reduce) el.textContent=text; }
+async function cycle(){
+  st={r:0,p:0,s:0,y:0}; show(); $('big').classList.remove('on'); wall(0);
+  for (var i=0;i<R.length;i++){
+    var r=R[i];
+    $('cnt').textContent='Review '+(i+1)+' of many';
+    ['st1','st2','st3'].forEach(function(s){ $(s).classList.remove('on','done'); });
+    $('rq').innerHTML='&nbsp;'; $('rby').innerHTML='&nbsp;'; $('li').innerHTML='&nbsp;'; $('em').innerHTML='&nbsp;'; $('msg').textContent=''; $('src').textContent='';
+    $('pstatus').textContent='Finding'; $('pstatus').style.color='#FCB400';
+    await wait(400);
+    $('st1').classList.add('on'); $('src').textContent='· '+r.src;
+    $('rq').textContent='“'+r.q+'”'; $('rby').textContent=r.by+' · review of '+COMP;
+    wall(Math.min(9,(i+1)*2+1)); bump('r', Math.round(FINAL.r*(i+1)/R.length), 900);
+    await wait(1000); $('st1').classList.add('done');
+    $('pstatus').textContent='Matching';
+    $('st2').classList.add('on'); $('li').textContent='LinkedIn: '+r.li; await wait(600);
+    $('em').textContent='Work email: '+r.em; bump('p', Math.round(FINAL.p*(i+1)/R.length), 700);
+    await wait(700); $('st2').classList.add('done');
+    $('pstatus').textContent='Writing';
+    $('st3').classList.add('on');
+    await type($('msg'), 'Saw your review of '+COMP+'. We built our product specifically because of complaints like yours, so I feel you.');
+    await wait(300);
+    $('msg').classList.add('sent'); $('st3').classList.add('done'); $('pstatus').textContent='Sent'; $('pstatus').style.color='#9DFFB0';
+    retrigger($('env'),'fly'); bump('s', Math.round(FINAL.s*(i+1)/R.length), 700);
+    await wait(900);
+    if (i%2===1 || i===R.length-1){ retrigger($('ping'),'on'); bump('y', Math.round(FINAL.y*(i+1)/R.length), 600); }
+    await wait(700);
+  }
+  $('cnt').textContent='Run done'; $('pstatus').textContent=FINAL.y+' replies from '+FINAL.s+' sent';
+  $('big').classList.add('on');
+  await wait(5200);
+}
+(async function loop(){ for(;;){ await cycle(); } })();
+})();
+</script>
+</body>
+</html>

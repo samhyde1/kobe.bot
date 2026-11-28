@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polymarket Blockchain Detective · kobe.bot</title>
+<meta name="description" content="Every Polymarket trade lands on a public blockchain. Kobe watches them as they land and tells you when smart money moves.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&amp;display=swap" rel="stylesheet">
+<style>
+html{background:#000;color-scheme:dark;-webkit-text-size-adjust:100%}
+body{margin:0;background:#000}
+#top{overflow-x:hidden;overflow-x:clip;background:#000;color:#fff;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;min-height:100vh;position:relative;padding-bottom:8px}
+.kb-navlink{font:700 12px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;color:#fff;padding:6px 0;border-bottom:1px solid transparent;white-space:nowrap}
+.kb-navlink[aria-current="page"]{border-bottom-color:#fff}
+a:focus-visible,button:focus-visible{outline:2px solid #3FD0C9;outline-offset:3px}
+a{color:inherit}a:hover{opacity:0.7}
+.fn-wrap{max-width:1280px;margin:0 auto;box-sizing:border-box;padding-left:clamp(20px,4vw,56px);padding-right:clamp(20px,4vw,56px)}
+.fn-label{font:700 11px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#a8a8a8}
+.ex{display:inline-block;font:700 9px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#a8a8a8;border:1px dashed #a8a8a8;padding:4px 5px 3px;vertical-align:middle}
+.fn-h1{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:0.2em;row-gap:8px;font:italic 700 clamp(48px,6.6vw,104px)/0.88 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.035em}
+.fn-h1 small{font:italic 400 clamp(22px,3vw,38px)/1 'IM Fell English',Georgia,serif;letter-spacing:0.01em}
+.fn-lede{margin:0;font:400 18px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:640px}
+.fn-head{display:flex;flex-direction:column;gap:24px;padding-top:clamp(48px,7vw,96px)}
+
+.fn-stage{margin-top:clamp(36px,5vw,64px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);border:1px solid rgba(255,255,255,0.3)}
+.fn-room{position:relative;border-right:1px solid rgba(255,255,255,0.3);background:#000;min-width:0}
+.fn-room svg{display:block;width:100%;height:auto}
+.ln{stroke:#fff;stroke-width:1;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.dim{stroke:rgba(255,255,255,0.35)}
+.faint{stroke:rgba(255,255,255,0.14)}
+.red{stroke:#FF5A4F}
+.bear{animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(2px)}}
+#glass{transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.rain{animation:rain 1.1s linear infinite}
+@keyframes rain{from{transform:translateY(-24px)}to{transform:translateY(24px)}}
+#strings path{stroke-dasharray:260;stroke-dashoffset:260;transition:stroke-dashoffset .9s ease}
+#strings.on path{stroke-dashoffset:0}
+.pin{fill:#FF5A4F}
+.cap{position:absolute;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cap span{font:700 10px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#a8a8a8}
+.live{color:#9DFFB0!important}
+.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#9DFFB0;margin-right:7px;vertical-align:1px;animation:blink 1.2s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+.fn-feed{padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0;background:#111;min-height:560px;box-sizing:border-box}
+.ff-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:2px solid #fff;padding-bottom:10px}
+.ff-status{font:700 11px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.16em;text-transform:uppercase;color:#FCB400;white-space:nowrap}
+.mkt{margin:0;font:700 22px/1.15 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.02em}
+.blocks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;height:236px;overflow:hidden;position:relative}
+.blocks::after{content:"";position:absolute;left:0;right:0;bottom:0;height:56px;background:linear-gradient(transparent,#111);pointer-events:none}
+.tr{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid rgba(255,255,255,0.18);background:#000;padding:8px 10px;font:400 13px/1.3 'Helvetica Neue',Helvetica,Arial,sans-serif;animation:land .35s cubic-bezier(.2,1.2,.4,1)}
+@keyframes land{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+.tr .blk{font:700 10px 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.1em;color:#a8a8a8;font-variant-numeric:tabular-nums}
+.tr .who{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr .amt{font-weight:700;font-variant-numeric:tabular-nums}
+.tr.cold{opacity:.45}
+.tr.hot{border-color:#FCB400;box-shadow:inset 3px 0 0 #FCB400}
+.dossier{border:1px solid rgba(255,255,255,0.3);background:#000;padding:12px;display:flex;flex-direction:column;gap:8px;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;position:relative}
+.dossier.on{opacity:1;transform:none}
+.dossier .nick{margin:0;font:700 20px/1.1 'Helvetica Neue',Helvetica,Arial,sans-serif}
+.dossier .rec{margin:0;font:400 14px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#a8a8a8}
+.dots{display:flex;flex-wrap:wrap;gap:3px}
+.dots i{width:7px;height:7px;background:#9DFFB0;opacity:0;transition:opacity .12s}
+.dots i.l{background:#FF5A4F}
+.dots i.on{opacity:1}
+.stamp{position:absolute;right:10px;top:10px;border:2.5px solid #9DFFB0;color:#9DFFB0;padding:4px 8px 3px;font:italic 800 18px/1 'Helvetica Neue',Helvetica,Arial,sans-serif;transform:rotate(-8deg) scale(2);opacity:0;background:#000}
+.stamp.on{animation:slam .3s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes slam{to{opacity:1;transform:rotate(-8deg) scale(1)}}
+.alert{margin-top:auto;background:#fff;color:#000;padding:12px 14px;opacity:0;transition:opacity .3s}
+.alert.on{opacity:1}
+.alert .fn-label{color:#000}
+.alert p{margin:6px 0 0;font:italic 400 20px/1.25 'IM Fell English',Georgia,serif}
+.fn-made{margin:10px 0 0;font:400 12px/1.4 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#a8a8a8}
+
+/* beat 2 */
+.fn-sec{padding-top:clamp(64px,8vw,112px);display:flex;flex-direction:column;gap:clamp(28px,4vw,48px)}
+.fn-h2{margin:0;font:700 clamp(36px,5vw,64px)/0.95 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.03em}
+.gap{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:stretch}
+.venue{background:#111;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.venue .pct{font:700 clamp(64px,9vw,132px)/0.9 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.04em;font-variant-numeric:tabular-nums}
+.venue .bar{height:6px;background:rgba(255,255,255,0.15)}
+.venue .bar b{display:block;height:100%;background:#fff;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.mid{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;padding:0 clamp(8px,2vw,24px);border-top:1px solid rgba(255,255,255,0.3);border-bottom:1px solid rgba(255,255,255,0.3)}
+.mid .big{font:700 clamp(28px,3.4vw,44px)/1 'Helvetica Neue',Helvetica,Arial,sans-serif;color:#FCB400;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.timers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:8px}
+.timer{border-top:1px solid #fff;padding-top:14px;display:flex;flex-direction:column;gap:6px}
+.timer .t{font:700 clamp(40px,5vw,64px)/1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.03em;font-variant-numeric:tabular-nums}
+.timer.k .t{color:#9DFFB0}
+.fn-copy{margin:0;font:400 18px/1.55 'Helvetica Neue',Helvetica,Arial,sans-serif;max-width:680px}
+.fn-note{margin:0;align-self:flex-start;background:#fff;color:#000;padding:10px 16px;font:700 18px/1.35 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-0.01em}
+.fn-foot{max-width:1280px;margin:0 auto;padding:96px clamp(20px,4vw,56px) 48px;box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#a8a8a8}
+@media (max-width:900px){.fn-stage{grid-template-columns:minmax(0,1fr)}.fn-room{border-right:0;border-bottom:1px solid rgba(255,255,255,0.3)}}
+@media (max-width:640px){.gap{grid-template-columns:minmax(0,1fr)}.mid{flex-direction:row;padding:12px 0}}
+@media (prefers-reduced-motion:reduce){.bear,.rain,.live::before,.tr{animation:none}.stamp.on{animation:none;opacity:1;transform:rotate(-8deg)}#strings path{transition:none}}
+</style>
+</head>
+<body>
+<div id="top">
+<nav aria-label="Main" class="kb-nav" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; padding: 20px clamp(20px, 4vw, 56px); border-bottom: 1px solid rgba(255,255,255,0.3)">
+<a href="/" aria-label="kobe.bot, back to the intro" style="display: flex; align-items: center; gap: 12px; text-decoration: none"><svg role="img" aria-label="kobe.bot bear logo" viewBox="0 0 19 17" width="38" height="34" style="display:block;fill:#ffffff;shape-rendering:crispEdges"><rect x="2" y="0" width="4" height="1"/><rect x="13" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="1"/><rect x="12" y="1" width="6" height="1"/><rect x="0" y="2" width="7" height="1"/><rect x="12" y="2" width="7" height="1"/><rect x="0" y="3" width="7" height="1"/><rect x="12" y="3" width="7" height="1"/><rect x="0" y="4" width="6" height="1"/><rect x="7" y="4" width="5" height="1"/><rect x="13" y="4" width="6" height="1"/><rect x="1" y="5" width="17" height="1"/><rect x="2" y="6" width="15" height="1"/><rect x="3" y="7" width="2" height="1"/><rect x="8" y="7" width="3" height="1"/><rect x="14" y="7" width="2" height="1"/><rect x="2" y="8" width="2" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="9" y="8" width="1" height="1"/><rect x="13" y="8" width="1" height="1"/><rect x="15" y="8" width="2" height="1"/><rect x="2" y="9" width="2" height="1"/><rect x="6" y="9" width="2" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="12" y="9" width="2" height="1"/><rect x="15" y="9" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="6" y="10" width="2" height="1"/><rect x="9" y="10" width="1" height="1"/><rect x="12" y="10" width="2" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="2" y="11" width="3" height="1"/><rect x="8" y="11" width="3" height="1"/><rect x="14" y="11" width="3" height="1"/><rect x="2" y="12" width="7" height="1"/><rect x="10" y="12" width="7" height="1"/><rect x="3" y="13" width="4" height="1"/><rect x="8" y="13" width="8" height="1"/><rect x="3" y="14" width="5" height="1"/><rect x="11" y="14" width="5" height="1"/><rect x="4" y="15" width="11" height="1"/><rect x="6" y="16" width="7" height="1"/></svg><span style="font: 600 21px -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing: -0.01em; color: #ffffff; line-height: 1">kobe.bot</span></a>
+<div class="kb-navlinks" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px clamp(16px, 2.4vw, 32px)"><a href="/home/" class="kb-navlink">Home</a><a href="/monitor/" class="kb-navlink">Monitor</a><a href="/use-cases/" class="kb-navlink">Use cases</a><a href="/legal/" class="kb-navlink">Interrogation room</a><a href="/finance/" class="kb-navlink" aria-current="page">Finance</a><a href="/business/" class="kb-navlink">Business</a></div>
+</nav>
+<div style="position: relative; z-index: 0">
+<div aria-hidden="true" style="position: absolute; inset: 0; z-index: -1; pointer-events: none; background-image: linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px); background-size: 12px 12px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 360px); mask-image: linear-gradient(to bottom, transparent 0, #000 360px)"></div>
+<main>
+<header class="fn-wrap fn-head">
+<span class="fn-label">Finance &nbsp;|&nbsp; Prediction markets</span>
+<h1 class="fn-h1"><span>Polymarket Blockchain Detective</span></h1>
+<p class="fn-lede">Every Polymarket trade lands on a public blockchain. Kobe watches them as they land and tells you when smart money moves.</p>
+</header>
+
+<section class="fn-wrap" aria-label="Kobe the detective at work, an animated demo">
+<div class="fn-stage">
+<div class="fn-room">
+<svg viewBox="0 0 600 440" role="img" aria-label="Kobe, the kobe.bot bear, in a detective's hat, holds a magnifying glass up to a board of wallets joined by red string">
+<defs><clipPath id="win"><rect x="30" y="56" width="120" height="150"/></clipPath></defs>
+<!-- floor -->
+<path class="ln faint" d="M0 330 H600 M0 368 H600 M0 416 H600"/>
+<!-- window with rain -->
+<rect class="ln dim" x="30" y="56" width="120" height="150"/>
+<path class="ln faint" d="M90 56 V206 M30 131 H150"/>
+<g clip-path="url(#win)"><g class="rain"><path class="ln faint" d="M44 40 L38 58 M70 70 L64 88 M108 30 L102 48 M132 90 L126 108 M52 120 L46 138 M96 140 L90 158 M140 170 L134 188 M60 190 L54 208 M120 60 L114 78 M84 100 L78 118 M40 160 L34 178 M112 200 L106 218"/></g></g>
+<!-- evidence board -->
+<rect class="ln" x="318" y="40" width="260" height="196"/>
+<g id="cards"></g>
+<g id="strings"></g>
+<!-- desk -->
+<polygon class="ln" points="250,300 470,338 250,376 30,338" fill="#000"/>
+<polyline class="ln" points="30,338 30,346 250,384 470,346 470,338"/>
+<path class="ln" d="M250 376 V384 M52 350 V430 M448 350 V430"/>
+<!-- desk lamp -->
+<path class="ln dim" d="M402 330 L418 280 L388 258"/><path class="ln dim" d="M372 250 L398 244 L404 268 Z"/>
+<!-- ticker tape on desk -->
+<path class="ln dim" d="M90 336 C130 320 170 352 210 334 C240 322 262 344 290 338"/>
+<!-- bear in deerstalker -->
+<g class="bear">
+<g transform="translate(156 186) scale(6)" fill="#fff" style="shape-rendering:crispEdges"><rect x="2" y="0" width="4" height="1"/><rect x="13" y="0" width="4" height="1"/><rect x="1" y="1" width="6" height="1"/><rect x="12" y="1" width="6" height="1"/><rect x="0" y="2" width="7" height="1"/><rect x="12" y="2" width="7" height="1"/><rect x="0" y="3" width="7" height="1"/><rect x="12" y="3" width="7" height="1"/><rect x="0" y="4" width="6" height="1"/><rect x="7" y="4" width="5" height="1"/><rect x="13" y="4" width="6" height="1"/><rect x="1" y="5" width="17" height="1"/><rect x="2" y="6" width="15" height="1"/><rect x="3" y="7" width="2" height="1"/><rect x="8" y="7" width="3" height="1"/><rect x="14" y="7" width="2" height="1"/><rect x="2" y="8" width="2" height="1"/><rect x="7" y="8" width="1" height="1"/><rect x="9" y="8" width="1" height="1"/><rect x="13" y="8" width="1" height="1"/><rect x="15" y="8" width="2" height="1"/><rect x="2" y="9" width="2" height="1"/><rect x="6" y="9" width="2" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="12" y="9" width="2" height="1"/><rect x="15" y="9" width="2" height="1"/><rect x="2" y="10" width="2" height="1"/><rect x="6" y="10" width="2" height="1"/><rect x="9" y="10" width="1" height="1"/><rect x="12" y="10" width="2" height="1"/><rect x="15" y="10" width="2" height="1"/><rect x="2" y="11" width="3" height="1"/><rect x="8" y="11" width="3" height="1"/><rect x="14" y="11" width="3" height="1"/><rect x="2" y="12" width="7" height="1"/><rect x="10" y="12" width="7" height="1"/><rect x="3" y="13" width="4" height="1"/><rect x="8" y="13" width="8" height="1"/><rect x="3" y="14" width="5" height="1"/><rect x="11" y="14" width="5" height="1"/><rect x="4" y="15" width="11" height="1"/><rect x="6" y="16" width="7" height="1"/></g>
+<g transform="translate(156 186) scale(6)" style="shape-rendering:crispEdges">
+<rect x="9" y="-3" width="1" height="1" fill="#fff"/><rect x="7" y="-2" width="5" height="1" fill="#fff"/><rect x="6" y="-1" width="7" height="4" fill="#fff"/><rect x="6" y="1" width="7" height="0.6" fill="#000"/><rect x="5" y="3" width="9" height="1" fill="#fff"/><rect x="5" y="3.6" width="9" height="0.4" fill="#000"/>
+</g>
+</g>
+<!-- magnifying glass -->
+<g id="glass"><circle class="ln" cx="320" cy="228" r="26" stroke-width="2.5"/><circle cx="320" cy="228" r="26" fill="#fff" fill-opacity="0.06"/><path class="ln" d="M302 246 L276 274" stroke-width="5"/></g>
+</svg>
+<div class="cap"><span class="live">On chain &nbsp;|&nbsp; Watching</span><span id="caselbl">Case 01</span></div>
+</div>
+
+<div class="fn-feed" aria-live="polite">
+<div class="ff-row"><span class="fn-label">Market &nbsp;<span class="ex">Example</span></span><span class="ff-status" id="fstatus">Watching</span></div>
+<p class="mkt" id="mkt">&nbsp;</p>
+<ul class="blocks" id="blocks"></ul>
+<div class="dossier" id="dossier">
+<span class="fn-label">Wallet file</span>
+<p class="nick" id="nick">&nbsp;</p>
+<p class="rec" id="rec">&nbsp;</p>
+<div class="dots" id="dots" aria-hidden="true"></div>
+<div class="stamp" id="stamp">SMART MONEY</div>
+</div>
+<div class="alert" id="alert"><span class="fn-label">Kobe alert &nbsp;<span class="ex" style="color:#000;border-color:#000">Example</span></span><p id="atext">&nbsp;</p></div>
+</div>
+</div>
+<p class="fn-made">Example numbers. Wallet names are made up; no real wallets or people are shown. Not financial advice.</p>
+</section>
+
+<section class="fn-wrap fn-sec" aria-labelledby="gap-h">
+<span class="fn-label">Second clue &nbsp;<span class="ex">Example</span></span>
+<h2 class="fn-h2" id="gap-h">Same bet. Two prices.</h2>
+<div class="gap" id="gap">
+<div class="venue"><span class="fn-label">Polymarket</span><span class="pct" id="p1">71%</span><div class="bar"><b id="b1" style="width:71%"></b></div></div>
+<div class="mid"><span class="fn-label">Gap</span><span class="big">23 pts</span></div>
+<div class="venue"><span class="fn-label">Kalshi</span><span class="pct" id="p2">48%</span><div class="bar"><b id="b2" style="width:48%"></b></div></div>
+</div>
+<div class="timers">
+<div class="timer"><span class="fn-label">The gap lasted</span><span class="t" id="tgap">67 s</span></div>
+<div class="timer k"><span class="fn-label">Kobe alerted you in</span><span class="t" id="tkobe">0.4 s</span></div>
+</div>
+<p class="fn-copy">Polymarket: 71%. Kalshi: 48%. The gap lasted 67 seconds. Kobe alerted you in 0.4.</p>
+<p class="fn-note">Kobe is the detective. You make the call.</p>
+</section>
+</main>
+<footer class="fn-foot"><span>KOBE.BOT</span><span>EVERY RUN, ON THE RECORD.</span></footer>
+</div>
+</div>
+<script>
+(function(){
+var CASES = [
+ {mkt:'Will the governor veto the transit bill?', nick:'“Quiet Owl”', area:'politics', w:41, n:50, amt:'$60K', side:'the veto',
+  alert:'A wallet that’s 41 for 50 on politics just put $60K on the veto.'},
+ {mkt:'Will the city council pass the stadium deal?', nick:'“Early Bird”', area:'city politics', w:33, n:40, amt:'$85K', side:'pass',
+  alert:'A wallet that’s 33 for 40 on city politics just put $85K on pass.'},
+ {mkt:'Bitcoin up or down, next 15 minutes?', nick:'“Night Shift”', area:'15-minute Bitcoin', w:58, n:70, amt:'$40K', side:'down',
+  alert:'A wallet that’s 58 for 70 on 15-minute Bitcoin just put $40K on down.'}
+];
+var NOISE = ['Wallet “Blue Kite”','Wallet “Tin Drum”','Wallet “Paper Moon”','Wallet “Red Fern”','Wallet “Slow Train”','Wallet “Big Sky”','Wallet “Copper”','Wallet “Lucky 7”','Wallet “Fog Horn”','Wallet “Glass Eye”'];
+var $ = function(id){return document.getElementById(id)};
+var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+var wait = function(ms){return new Promise(function(r){setTimeout(r, ms)})};
+var block = 81204113, run = 0;
+var CARDS = [[336,58],[420,58],[504,58],[336,150],[504,150]];
+function board(){
+  var g=$('cards'); g.innerHTML='';
+  CARDS.forEach(function(c,i){ g.insertAdjacentHTML('beforeend','<rect class="ln dim" x="'+c[0]+'" y="'+c[1]+'" width="58" height="46" fill="#000"/><path class="ln faint" d="M'+(c[0]+8)+' '+(c[1]+14)+' H'+(c[0]+50)+' M'+(c[0]+8)+' '+(c[1]+24)+' H'+(c[0]+40)+' M'+(c[0]+8)+' '+(c[1]+34)+' H'+(c[0]+46)+'"/><circle class="pin" cx="'+(c[0]+29)+'" cy="'+(c[1]+3)+'" r="2.5"/>'); });
+  // centre card = suspect
+  g.insertAdjacentHTML('beforeend','<rect class="ln" x="420" y="150" width="58" height="46" fill="#000" id="sus"/><text x="449" y="178" text-anchor="middle" style="fill:#FCB400;font:700 16px Helvetica Neue,Helvetica,Arial,sans-serif">?</text><circle class="pin" cx="449" cy="153" r="2.5"/>');
+  var s=$('strings'); s.classList.remove('on'); s.innerHTML='';
+  CARDS.forEach(function(c){ s.insertAdjacentHTML('beforeend','<path class="ln red" d="M'+(c[0]+29)+' '+(c[1]+3)+' L449 153"/>'); });
+}
+function glass(x,y){ $('glass').style.transform='translate('+x+'px,'+y+'px)'; }
+function fmt(n){ return '$'+n.toLocaleString('en-US'); }
+function addTrade(who, side, amt, cls){
+  block += 1 + Math.floor(Math.random()*3);
+  var li=document.createElement('li'); li.className='tr '+(cls||'');
+  li.innerHTML='<span class="blk"></span><span class="who"></span><span class="amt"></span>';
+  li.children[0].textContent='#'+block.toLocaleString('en-US');
+  li.children[1].textContent=who+' · '+side;
+  li.children[2].textContent=amt;
+  var ul=$('blocks'); ul.insertBefore(li, ul.firstChild);
+  while (ul.children.length>8) ul.removeChild(ul.lastChild);
+  return li;
+}
+async function play(c){
+  run++;
+  $('caselbl').textContent='Case '+String(run).padStart(2,'0');
+  $('mkt').textContent=c.mkt;
+  $('fstatus').textContent='Watching'; $('fstatus').style.color='#FCB400';
+  $('dossier').classList.remove('on'); $('stamp').classList.remove('on'); $('alert').classList.remove('on');
+  $('dots').innerHTML=''; $('blocks').innerHTML='';
+  board(); glass(0,0);
+  var sides = c.side==='down'||c.side==='up' ? ['up','down'] : (c.side==='the veto' ? ['the veto','no veto'] : ['pass','fail']);
+  for (var i=0;i<6;i++){
+    addTrade(NOISE[(i+run*3)%NOISE.length], sides[i%2], fmt((1+Math.floor(Math.random()*24))*50), 'cold');
+    glass(-40+Math.random()*80, -60+Math.random()*40);
+    await wait(reduce?300:620);
+  }
+  var hot = addTrade('Wallet '+c.nick, c.side, c.amt, 'hot');
+  $('fstatus').textContent='Suspicious';
+  glass(129, -50);
+  await wait(900);
+  $('strings').classList.add('on');
+  $('nick').textContent='Wallet '+c.nick;
+  $('rec').textContent='Past bets on '+c.area+': '+c.w+' right out of '+c.n+'.';
+  var d=$('dots');
+  for (var k=0;k<c.n;k++){ var e=document.createElement('i'); if(k>=c.w) e.className='l'; d.appendChild(e); }
+  $('dossier').classList.add('on');
+  for (var k=0;k<c.n;k++){ d.children[k].classList.add('on'); await wait(reduce?0:28); }
+  await wait(400);
+  $('stamp').classList.add('on');
+  $('fstatus').textContent='Smart money'; $('fstatus').style.color='#9DFFB0';
+  await wait(700);
+  $('atext').textContent='“'+c.alert+'”';
+  $('alert').classList.add('on');
+  await wait(4600);
+}
+(async function loop(){ var n=0; for(;;){ await play(CASES[n%CASES.length]); n++; } })();
+
+// beat 2: count the gap, then the alert
+var started=false;
+function beat(){
+  if (started) return; started=true;
+  var t0=performance.now();
+  (function f(now){
+    var s=Math.min(67,(now-t0)/2000*67);
+    $('tgap').textContent=Math.round(s)+' s';
+    $('tkobe').textContent=Math.min(0.4,(now-t0)/2000*0.4*6).toFixed(1)+' s';
+    if (s<67) requestAnimationFrame(f);
+  })(t0);
+}
+if ('IntersectionObserver' in window && !reduce){
+  $('tgap').textContent='0 s'; $('tkobe').textContent='0.0 s';
+  new IntersectionObserver(function(es,o){ es.forEach(function(e){ if(e.isIntersecting){ beat(); o.disconnect(); } }); },{threshold:.4}).observe($('gap'));
+}
+})();
+</script>
+</body>
+</html>
